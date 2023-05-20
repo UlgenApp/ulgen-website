@@ -37,7 +37,6 @@ function PasswordConfirmationPage() {
       return;
     } else {
       setIsMatch(true);
-      console.log(token);
       try {
         const response = await axios.post(
           process.env.REACT_APP_RESET_PASSWORD_URL,
