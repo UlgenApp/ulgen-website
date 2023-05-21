@@ -6,6 +6,7 @@ function PasswordConfirmationPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isMatch, setIsMatch] = useState(true);
+  const [isResetSuccessful, setIsResetSuccesful] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [token, setToken] = useState(null);
 
@@ -32,6 +33,11 @@ function PasswordConfirmationPage() {
       return;
     }
 
+    if (!token) {
+      console.log("Token undefined.");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setIsMatch(false);
       return;
@@ -43,10 +49,17 @@ function PasswordConfirmationPage() {
           {
             token: token,
             newPassword: password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
         if (response.status === 200) {
+          setIsResetSuccesful(true);
           console.log("Password is successfully reset");
         } else {
           console.log("Error resetting password", response);
@@ -120,6 +133,11 @@ function PasswordConfirmationPage() {
           >
             Şifreyi Değiştir
           </button>
+          {isResetSuccessful && (
+            <div className="text-success" style={{ paddingTop: "10px" }}>
+              Şifrenizi başarıyla değiştirdiniz!
+            </div>
+          )}
         </div>
       </form>
     </div>
