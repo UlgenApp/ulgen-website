@@ -60,16 +60,13 @@ function PasswordConfirmationPage() {
         );
 
         if (response.status === 200) {
-          console.log("Password is successfully reset");
           displayMessage("success");
           setConfirmPassword("");
           setPassword("");
         } else {
-          console.log("Error resetting password", response);
           displayMessage("error");
         }
       } catch (error) {
-        console.log("Error resetting password", error);
         displayMessage("error");
       }
     }
@@ -79,7 +76,7 @@ function PasswordConfirmationPage() {
     if (type === "length-error") {
       Swal.fire({
         icon: "warning",
-        title: "Şifreniz 8 haneden daha fazla olmalıdır",
+        title: "Şifreniz 8 haneden daha fazla olmalıdır.",
         text: "",
         confirmButtonColor: "#34548E",
         confirmButtonText: "Tamam",
