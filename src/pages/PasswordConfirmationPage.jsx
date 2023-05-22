@@ -1,14 +1,13 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, isValidElement } from "react";
 import ulgenLogo from "../Logo1.svg";
 import Swal from "sweetalert2";
 
 function PasswordConfirmationPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isMatch, setIsMatch] = useState(true);
-  const [isEmpty, setIsEmpty] = useState(false);
   const [token, setToken] = useState(null);
+  const [isLengthValid, setIsLengthValid] = useState(true);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -17,19 +16,18 @@ function PasswordConfirmationPage() {
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    setIsEmpty(false);
+    setIsLengthValid(e.target.value.length >= 8);
   };
 
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
-    setIsEmpty(false);
   };
 
   const resetPassword = async (e) => {
     e.preventDefault();
 
     if (password === "" || confirmPassword === "") {
-      setIsEmpty(true);
+      displayMessage("empty-fields");
       return;
     }
 
@@ -38,11 +36,14 @@ function PasswordConfirmationPage() {
       return;
     }
 
+    if (!isLengthValid) {
+      displayMessage("length-error");
+      return;
+    }
     if (password !== confirmPassword) {
-      setIsMatch(false);
+      displayMessage("password-mismatch");
       return;
     } else {
-      setIsMatch(true);
       try {
         const response = await axios.post(
           process.env.REACT_APP_RESET_PASSWORD_URL,
@@ -61,6 +62,8 @@ function PasswordConfirmationPage() {
         if (response.status === 200) {
           console.log("Password is successfully reset");
           displayMessage("success");
+          setConfirmPassword("");
+          setPassword("");
         } else {
           console.log("Error resetting password", response);
           displayMessage("error");
@@ -73,18 +76,46 @@ function PasswordConfirmationPage() {
   };
 
   const displayMessage = (type) => {
-    if (type == "success") {
-      Swal.fire(
-        "Şifreniz başarıyla değiştirildi!",
-        "Artık yeni şifrenizle Ülgen'i kullanabilirsiniz.",
-        "success"
-      );
+    if (type === "length-error") {
+      Swal.fire({
+        icon: "warning",
+        title: "Şifreniz 8 haneden daha fazla olmalıdır",
+        text: "",
+        confirmButtonColor: "#34548E",
+        confirmButtonText: "Tamam",
+      });
+    } else if (type === "success") {
+      Swal.fire({
+        icon: "success",
+        title: "Şifreniz başarıyla değiştirildi!",
+        text: "Artık yeni şifrenizle Ülgen'i kullanabilirsiniz.",
+        confirmButtonColor: "#34548E",
+        confirmButtonText: "Tamam",
+      });
+    } else if (type === "password-mismatch") {
+      Swal.fire({
+        icon: "warning",
+        title: "Şifreniz eşleşmiyor.",
+        text: "",
+        confirmButtonColor: "#34548E",
+        confirmButtonText: "Tamam",
+      });
+    } else if (type === "empty-fields") {
+      Swal.fire({
+        icon: "warning",
+        title: "Tüm alanları doldurmalısınız.",
+        text: "",
+        confirmButtonColor: "#34548E",
+        confirmButtonText: "Tamam",
+      });
     } else {
-      Swal.fire(
-        "Geçersiz veya kullanılmış bağlantı.",
-        "Lütfen bağlantının doğru olduğundan emin olun.",
-        "error"
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Geçersiz veya kullanılmış bağlantı.",
+        text: "Lütfen bağlantının doğru olduğundan emin olun.",
+        confirmButtonColor: "#34548E",
+        confirmButtonText: "Tamam",
+      });
     }
   };
 
@@ -113,9 +144,6 @@ function PasswordConfirmationPage() {
               required
             />
             <label htmlFor="password">Yeni Şifreniz</label>
-            {isEmpty && password === "" && (
-              <div className="text-danger">Bu alan doldurulmalı.</div>
-            )}
           </div>
         </div>
         <div className="col-md-12">
@@ -130,12 +158,6 @@ function PasswordConfirmationPage() {
               required
             />
             <label htmlFor="confirmPassword">Yeni Şifrenizi Onaylayınız</label>
-            {isEmpty && confirmPassword === "" && (
-              <div className="text-danger">Bu alan doldurulmalı.</div>
-            )}
-            {!isMatch && (
-              <div className="text-danger">Şifreniz Eşleşmiyor.</div>
-            )}
           </div>
         </div>
         <div className="col-12">
