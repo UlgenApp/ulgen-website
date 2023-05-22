@@ -7,6 +7,7 @@ function PasswordConfirmationPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isMatch, setIsMatch] = useState(true);
   const [isResetSuccessful, setIsResetSuccesful] = useState(false);
+  const [resetUnsuccessful, setResetUnsuccesful] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [token, setToken] = useState(null);
 
@@ -61,10 +62,14 @@ function PasswordConfirmationPage() {
         if (response.status === 200) {
           setIsResetSuccesful(true);
           console.log("Password is successfully reset");
+          setResetUnsuccesful(false);
         } else {
+          setIsResetSuccesful(false);
           console.log("Error resetting password", response);
+          setResetUnsuccesful(true);
         }
       } catch (error) {
+        setResetUnsuccesful(true);
         console.log("Error resetting password", error);
       }
     }
@@ -136,6 +141,11 @@ function PasswordConfirmationPage() {
           {isResetSuccessful && (
             <div className="text-success" style={{ paddingTop: "10px" }}>
               Şifrenizi başarıyla değiştirdiniz!
+            </div>
+          )}
+          {resetUnsuccessful && (
+            <div className="text-danger" style={{ paddingTop: "10px" }}>
+              Geçersiz veya kullanılmış bağlantı!
             </div>
           )}
         </div>
