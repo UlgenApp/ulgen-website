@@ -1,13 +1,12 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ulgenLogo from "../Logo1.svg";
+import Swal from "sweetalert2";
 
 function PasswordConfirmationPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isMatch, setIsMatch] = useState(true);
-  const [isResetSuccessful, setIsResetSuccesful] = useState(false);
-  const [resetUnsuccessful, setResetUnsuccesful] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [token, setToken] = useState(null);
 
@@ -60,18 +59,32 @@ function PasswordConfirmationPage() {
         );
 
         if (response.status === 200) {
-          setIsResetSuccesful(true);
           console.log("Password is successfully reset");
-          setResetUnsuccesful(false);
+          displayMessage("success");
         } else {
-          setIsResetSuccesful(false);
           console.log("Error resetting password", response);
-          setResetUnsuccesful(true);
+          displayMessage("error");
         }
       } catch (error) {
-        setResetUnsuccesful(true);
         console.log("Error resetting password", error);
+        displayMessage("error");
       }
+    }
+  };
+
+  const displayMessage = (type) => {
+    if (type == "success") {
+      Swal.fire(
+        "Şifreniz başarıyla değiştirildi!",
+        "Artık yeni şifrenizle Ülgen'i kullanabilirsiniz.",
+        "success"
+      );
+    } else {
+      Swal.fire(
+        "Geçersiz veya kullanılmış bağlantı.",
+        "Lütfen bağlantının doğru olduğundan emin olun.",
+        "error"
+      );
     }
   };
 
@@ -92,7 +105,7 @@ function PasswordConfirmationPage() {
           <div className="form-floating mb-3">
             <input
               type="password"
-              className="form-control"
+              className="form-control bg-light"
               id="password"
               placeholder="examplepassword"
               value={password}
@@ -109,7 +122,7 @@ function PasswordConfirmationPage() {
           <div className="form-floating mb-3">
             <input
               type="password"
-              className="form-control"
+              className="form-control bg-light"
               id="confirmPassword"
               placeholder="examplepasswordconfirm"
               value={confirmPassword}
@@ -138,16 +151,6 @@ function PasswordConfirmationPage() {
           >
             Şifreyi Değiştir
           </button>
-          {isResetSuccessful && (
-            <div className="text-success" style={{ paddingTop: "10px" }}>
-              Şifrenizi başarıyla değiştirdiniz!
-            </div>
-          )}
-          {resetUnsuccessful && (
-            <div className="text-danger" style={{ paddingTop: "10px" }}>
-              Geçersiz veya kullanılmış bağlantı!
-            </div>
-          )}
         </div>
       </form>
     </div>
