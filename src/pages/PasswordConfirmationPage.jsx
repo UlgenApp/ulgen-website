@@ -91,7 +91,7 @@ function PasswordConfirmationPage() {
   return (
     <div
       className="d-flex justify-content-center align-items-center"
-      style={{ marginTop: "20vh" }}
+      style={{ paddingTop: "20vh" }}
     >
       <form
         className="row g-3 needs-validation"
@@ -105,7 +105,7 @@ function PasswordConfirmationPage() {
           <div className="form-floating mb-3">
             <input
               type="password"
-              className="form-control bg-light"
+              className="form-control"
               id="password"
               placeholder="examplepassword"
               value={password}
@@ -122,7 +122,7 @@ function PasswordConfirmationPage() {
           <div className="form-floating mb-3">
             <input
               type="password"
-              className="form-control bg-light"
+              className="form-control"
               id="confirmPassword"
               placeholder="examplepasswordconfirm"
               value={confirmPassword}
@@ -144,9 +144,8 @@ function PasswordConfirmationPage() {
             type="submit"
             style={{
               background: "linear-gradient(to right, #8AB2CB, #082266)",
-              borderColor: "#FFFFFF",
-              color:
-                "#FFF4E6" /* Set text color to white for better visibility */,
+              borderColor: "#082266",
+              color: "#FFF4E6",
             }}
           >
             Şifreyi Değiştir
